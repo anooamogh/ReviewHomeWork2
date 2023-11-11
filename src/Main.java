@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -8,6 +9,10 @@ public class Main {
         Graph graph = new Graph(5);    // Create a graph with a maximum size of 5
         graph.createGraph("g2.txt");    // Read graph data from a file
         System.out.println("Is graph empty? " + graph.isEmpty());
+        if(graph.isConnected())
+            System.out.println("connected");
+        else
+            System.out.println("not connected");
     }
 
     private static class Graph {
@@ -63,12 +68,29 @@ public class Main {
                 System.out.println("File not found");
             }
         }
-        public void isConnected(){
 
+        public boolean isConnected() {
+            Boolean[] arr = new Boolean[maxSize];
+            Arrays.fill(arr, false); // Initialize the array with false values
+            for (int i = 0; i < maxSize; i++) {
+                connectHelper(i, arr);
+                if (Arrays.asList(arr).contains(false)) {
+                    return false;
+                }
+                Arrays.fill(arr, false); // Reset the array for the next iteration
+            }
+            return true;
         }
-        private void connectHelper(){
-            int [] array = new int[currentSize];
+
+        private void connectHelper(int startingIndex, Boolean[] arrayOfVisited) {
+            arrayOfVisited[startingIndex] = true;
+            for (int i = 0; i < arrayOfVisited.length; i++) {
+                if (this.adjacencyMatrix[startingIndex][i] == 1 && !arrayOfVisited[i]) {
+                    connectHelper(i, arrayOfVisited);
+                }
+            }
         }
+
     }
 
 }
